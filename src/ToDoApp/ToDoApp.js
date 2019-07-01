@@ -22,6 +22,7 @@ function ToDoApp() {
         : themes.dark
       : themes.light
   );
+
   const handleSwitchTheme = _ => {
     localStorage.setItem(
       "theme",
@@ -29,6 +30,18 @@ function ToDoApp() {
     );
     setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
   };
+
+  const ChangeThemeButton = () => (
+    <Button
+      className={styles.themeButton}
+      variant="contained"
+      color={"secondary"}
+      onClick={handleSwitchTheme}
+    >
+      Theme
+      <Icon className={styles.themeIcon}>{currentTheme.switchThemeIcon}</Icon>
+    </Button>
+  );
 
   return (
     <div className={styles.app}>
@@ -44,17 +57,7 @@ function ToDoApp() {
             className={styles.header}
             style={{ backgroundColor: currentTheme.background }}
           >
-            <Button
-              className={styles.themeButton}
-              variant="contained"
-              color={"secondary"}
-              onClick={handleSwitchTheme}
-            >
-              Theme
-              <Icon className={styles.themeIcon}>
-                {currentTheme.switchThemeIcon}
-              </Icon>
-            </Button>
+            <ChangeThemeButton />
             <ToDoPanel />
           </header>
         </MuiThemeProvider>

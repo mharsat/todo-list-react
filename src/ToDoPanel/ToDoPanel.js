@@ -5,6 +5,7 @@ import { Button } from "@material-ui/core";
 import { ThemeContext } from "../theme-context.js";
 import * as server from "../serverAPI";
 import ToDoList from "../ToDoList/ToDoList";
+import ToDoFooter from "../ToDoFooter/ToDoFooter";
 
 export const tabs = Object.freeze({
   ALL: "All",
@@ -138,29 +139,11 @@ class ToDoPanel extends Component {
               handleCheck={this.handleCheck}
               handleEditTask={this.handleEditTask}
             />
-            <div className={styles.footer}>
-              <div
-                className={styles.tasksLeft}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  color: theme.text
-                }}
-              >
-                {this.state.tasksLeft}{" "}
-                {this.state.tasksLeft === 1 ? "task" : "tasks"} left
-              </div>
-              {this.generateFooterTabs()}
-              <Button
-                className={styles.clearCheckedButton}
-                onClick={this.handleClearCheckedTasks}
-                style={{
-                  color: theme.text
-                }}
-              >
-                Clear Checked
-              </Button>
-            </div>
+            <ToDoFooter
+              tasksLeft={this.state.tasksLeft}
+              handleClearCheckedTasks={this.handleClearCheckedTasks}
+              generateFooterTabs={this.generateFooterTabs}
+            />
           </div>
         )}
       </ThemeContext.Consumer>
