@@ -2,13 +2,22 @@
   text-align: center;
   
   .header {
-    background-color: #282c34;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
-    color: white;
+
+    .themeButton {
+      color: white;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      .themeIcon {
+        margin-left: 10px;
+        color: white;
+      }
+    }
   }
 }

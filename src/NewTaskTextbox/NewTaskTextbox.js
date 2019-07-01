@@ -1,9 +1,8 @@
 import React from 'react';
 import styles from './NewTaskTextbox.module.scss';
-import TaskRow from '../TaskRow/TaskRow';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
-
+import {ThemeContext} from '../theme-context.js'
 
 const NewTaskTextbox = ({ onNewTask }) => 
 {
@@ -13,12 +12,15 @@ const NewTaskTextbox = ({ onNewTask }) =>
             event.target.value = '';
         }
     };
-    return <div className={styles.textbox}>
+    return <ThemeContext.Consumer>
+        {theme => <div className={styles.textbox}>
         <TextField fullWidth
             label="Enter new task..."
             onKeyDown={enterTask}
+            style={{fontWeight: 400, color: theme.text}}
             />
-    </div>
+    </div>}
+    </ThemeContext.Consumer>
 };
 
 NewTaskTextbox.propTypes = {
