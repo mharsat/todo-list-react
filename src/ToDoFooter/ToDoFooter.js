@@ -22,7 +22,7 @@ const ToDoFooter = props => {
           {props.generateFooterTabs()}
           <Button
             className={styles.clearCheckedButton}
-            onClick={props.handleClearCheckedTasks}
+            onClick={props.onClearCheckedTasks}
             style={{
               color: theme.text
             }}
@@ -37,7 +37,7 @@ const ToDoFooter = props => {
 
 ToDoFooter.propTypes = {
   tasksLeft: PropTypes.number.isRequired,
-  handleClearCheckedTasks: PropTypes.func.isRequired,
+  onClearCheckedTasks: PropTypes.func.isRequired,
   generateFooterTabs: PropTypes.func.isRequired
 };
 

@@ -29,8 +29,8 @@ class ToDoList extends Component {
           index={index}
           isLast={index === tasks.length - 1}
           isChosen={this.state.chosenElement === index}
-          handleMouseEnter={this.handleMouseEnter}
-          handleMouseLeave={this.handleMouseLeave}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
           {...props}
         />
       );
@@ -58,10 +58,8 @@ class ToDoList extends Component {
 ToDoList.propTypes = {
   tasks: PropTypes.array.isRequired,
   currentTab: PropTypes.string.isRequired,
-  handleNewTask: PropTypes.func.isRequired,
-  handleDeleteTask: PropTypes.func.isRequired,
-  handleEnteredTask: PropTypes.func.isRequired,
-  handleCheck: PropTypes.func.isRequired
+  onDeleteTask: PropTypes.func.isRequired,
+  onCheck: PropTypes.func.isRequired
 };
 
 export default ToDoList;

@@ -81,10 +81,9 @@ class ToDoPanel extends Component {
     await server.removeTask(id);
   };
 
-  handleEditTask = async (event, index) => {
+  handleEditTask = async (newTask, index) => {
+    console.log(newTask);
     const id = this.state.tasks[index]._id;
-    const newTask = event.target.value;
-    event.target.blur();
 
     if (newTask === "") {
       this.handleDeleteTask(index);
@@ -97,9 +96,6 @@ class ToDoPanel extends Component {
       });
     }
   };
-
-  handleEnteredTask = (event, index) =>
-    event.key === "Enter" ? this.handleEditTask(event, index) : undefined;
 
   generateTabButton = tab => (
     <Button
@@ -133,15 +129,13 @@ class ToDoPanel extends Component {
             <ToDoList
               tasks={this.state.tasks}
               currentTab={this.state.currentTab}
-              handleNewTask={this.handleEditTask}
-              handleDeleteTask={this.handleDeleteTask}
-              handleEnteredTask={this.handleEnteredTask}
-              handleCheck={this.handleCheck}
-              handleEditTask={this.handleEditTask}
+              onDeleteTask={this.handleDeleteTask}
+              onCheck={this.handleCheck}
+              onEditTask={this.handleEditTask}
             />
             <ToDoFooter
               tasksLeft={this.state.tasksLeft}
-              handleClearCheckedTasks={this.handleClearCheckedTasks}
+              onClearCheckedTasks={this.handleClearCheckedTasks}
               generateFooterTabs={this.generateFooterTabs}
             />
           </div>

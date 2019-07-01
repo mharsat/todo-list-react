@@ -7,6 +7,7 @@ import InputBase from "@material-ui/core/InputBase";
 import { ThemeContext } from "../theme-context.js";
 import styles from "./ToDoTask.module.scss";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 function ToDoTask(props) {
   const generateDeleteIcon = theme => {
@@ -14,7 +15,7 @@ function ToDoTask(props) {
       return (
         <Icon
           className={styles.clearIcon}
-          onClick={event => props.handleDeleteTask(props.index)}
+          onClick={event => props.onDeleteTask(props.index)}
           style={{
             color: theme.clearButton
           }}
@@ -24,6 +25,8 @@ function ToDoTask(props) {
       );
   };
 
+  const onEditTask = _.debounce(props.onEditTask, 200);
+
   return (
     <ThemeContext.Consumer key={`theme-${props.task.title}_${props.index}`}>
       {theme => (
@@ -31,12 +34,12 @@ function ToDoTask(props) {
           <ListItem
             className={styles.listItem}
             key={`${props.task.title}_${props.index}`}
-            onMouseEnter={() => props.handleMouseEnter(props.index)}
-            onMouseLeave={() => props.handleMouseLeave()}
+            onMouseEnter={() => props.onMouseEnter(props.index)}
+            onMouseLeave={() => props.onMouseLeave()}
           >
             <BlueCheckbox
               onChange={(event, isChecked) =>
-                props.handleCheck(event, isChecked, props.index)
+                props.onCheck(event, isChecked, props.index)
               }
               checked={props.task.isDone}
             />
@@ -44,8 +47,7 @@ function ToDoTask(props) {
               className={styles.inputBase}
               fullWidth
               defaultValue={props.task.title}
-              onBlur={event => props.handleEditTask(event, props.index)}
-              onKeyPress={event => props.handleEnteredTask(event, props.index)}
+              onChange={event => onEditTask(event.target.value, props.index)}
               style={{
                 fontSize: "x-large",
                 textDecoration: props.task.isDone ? "line-through" : "none",
@@ -62,12 +64,11 @@ function ToDoTask(props) {
 }
 
 ToDoTask.propTypes = {
-  handleNewTask: PropTypes.func.isRequired,
-  handleDeleteTask: PropTypes.func.isRequired,
-  handleEnteredTask: PropTypes.func.isRequired,
-  handleCheck: PropTypes.func.isRequired,
-  handleMouseEnter: PropTypes.func.isRequired,
-  handleMouseLeave: PropTypes.func.isRequired,
+  onDeleteTask: PropTypes.func.isRequired,
+  onEditTask: PropTypes.func.isRequired,
+  onCheck: PropTypes.func.isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
+  onMouseLeave: PropTypes.func.isRequired,
   isChosen: PropTypes.bool.isRequired
 };
 
