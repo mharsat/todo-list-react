@@ -84,9 +84,10 @@ class ToDoPanel extends PureComponent {
 
   handleCheck = async (_, isChecked, index) => {
     const id = this.state.tasks[index]._id;
-    const [oldTasks, oldTasksLeft] = [
+    const [oldTasks, oldTasksLeft, oldTask] = [
       [...this.state.tasks],
-      this.state.tasksLeft
+      this.state.tasksLeft,
+      { ...this.state.tasks[index] }
     ];
     const tasks = [...this.state.tasks];
     tasks[index].isDone = isChecked;
@@ -97,6 +98,7 @@ class ToDoPanel extends PureComponent {
     const error = await server.updateTask(id, { isDone: isChecked });
     if (error) {
       this.props.onShowError(`${error}: ${oldTasks[index].title}`);
+      oldTasks[index].isDone = oldTask.isDone;
       this.setState({
         tasks: oldTasks,
         tasksLeft: oldTasksLeft
@@ -130,9 +132,10 @@ class ToDoPanel extends PureComponent {
 
   handleEditTask = async (newTask, index) => {
     const id = this.state.tasks[index]._id;
-    const [oldTasks, oldTasksLeft] = [
+    const [oldTasks, oldTasksLeft, oldTask] = [
       [...this.state.tasks],
-      this.state.tasksLeft
+      this.state.tasksLeft,
+      { ...this.state.tasks[index] }
     ];
     if (newTask === "") {
       this.handleDeleteTask(index);
@@ -143,8 +146,9 @@ class ToDoPanel extends PureComponent {
       const error = await server.updateTask(id, { title: newTask });
       if (error) {
         this.props.onShowError(`${error}: ${oldTasks[index].title}`);
+        oldTasks[index].title = oldTask.title;
         this.setState({
-          tasks: oldTasks,
+          tasks: [...oldTasks],
           tasksLeft: oldTasksLeft
         });
       }

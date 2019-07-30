@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import Snackbar from "@material-ui/core/Snackbar";
-import { Slide } from "@material-ui/core";
+import { Snackbar, Slide } from "@material-ui/core";
 
 export const ErrorSnackbar = React.memo(props => {
   const [error, setError] = useState("");
@@ -18,7 +17,7 @@ export const ErrorSnackbar = React.memo(props => {
     <Snackbar
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       open={error !== props.error}
-      autoHideDuration={2000}
+      autoHideDuration={4000}
       onClose={handleClose}
       TransitionComponent={Slide}
       message={<span> {props.error} </span>}
