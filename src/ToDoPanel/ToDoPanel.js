@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import styles from "./ToDoPanel.module.scss";
 import NewTaskTextbox from "../NewTaskTextbox/NewTaskTextbox";
-import { Button, Fade, CircularProgress, Slide, Zoom } from "@material-ui/core";
+import { Button, Fade, CircularProgress } from "@material-ui/core";
 import { ThemeContext } from "../theme-context.js";
 import * as server from "../serverAPI";
 import ToDoList from "../ToDoList/ToDoList";
@@ -96,7 +96,7 @@ class ToDoPanel extends PureComponent {
     });
     const error = await server.updateTask(id, { isDone: isChecked });
     if (error) {
-      this.props.onShowError(`${error}: ${tasks[index].title}`);
+      this.props.onShowError(`${error}: ${oldTasks[index].title}`);
       this.setState({
         tasks: oldTasks,
         tasksLeft: oldTasksLeft
@@ -120,7 +120,7 @@ class ToDoPanel extends PureComponent {
     });
     const error = await server.removeTask(id);
     if (error) {
-      this.props.onShowError(`${error}: ${tasks[index].title}`);
+      this.props.onShowError(`${error}: ${oldTasks[index].title}`);
       this.setState({
         tasks: oldTasks,
         tasksLeft: oldTasksLeft
@@ -142,7 +142,7 @@ class ToDoPanel extends PureComponent {
       this.setState({ tasks });
       const error = await server.updateTask(id, { title: newTask });
       if (error) {
-        this.props.onShowError(`${error}: ${tasks[index].title}`);
+        this.props.onShowError(`${error}: ${oldTasks[index].title}`);
         this.setState({
           tasks: oldTasks,
           tasksLeft: oldTasksLeft
