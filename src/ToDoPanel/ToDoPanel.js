@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import styles from "./ToDoPanel.module.scss";
 import NewTaskTextbox from "../NewTaskTextbox/NewTaskTextbox";
-import { Button } from "@material-ui/core";
+import { Button, Fade, CircularProgress, Slide, Zoom } from "@material-ui/core";
 import { ThemeContext } from "../theme-context.js";
 import * as server from "../serverAPI";
 import ToDoList from "../ToDoList/ToDoList";
@@ -20,7 +20,9 @@ class ToDoPanel extends PureComponent {
     this.state = {
       tasks: [],
       tasksLeft: 0,
-      currentTab: tabs.ALL
+      currentTab: tabs.ALL,
+      isLoading: true,
+      tasksExist: false
     };
   }
 
@@ -30,7 +32,8 @@ class ToDoPanel extends PureComponent {
     const tasksLeft = tasks.filter(task => !task.isDone).length;
     this.setState({
       tasks,
-      tasksLeft
+      tasksLeft,
+      isLoading: false
     });
   }
 
@@ -177,13 +180,22 @@ class ToDoPanel extends PureComponent {
             }}
           >
             <NewTaskTextbox onNewTask={this.handleNewTask} />
-            <ToDoList
-              tasks={this.state.tasks}
-              currentTab={this.state.currentTab}
-              onDeleteTask={this.handleDeleteTask}
-              onCheck={this.handleCheck}
-              onEditTask={this.handleEditTask}
-            />
+            <Fade
+              in={this.state.isLoading}
+              onExited={_ => this.setState({ tasksExist: true })}
+              unmountOnExit
+            >
+              <CircularProgress className={styles.loader} />
+            </Fade>
+            <Fade in={this.state.tasksExist} mountOnEnter>
+              <ToDoList
+                tasks={this.state.tasks}
+                currentTab={this.state.currentTab}
+                onDeleteTask={this.handleDeleteTask}
+                onCheck={this.handleCheck}
+                onEditTask={this.handleEditTask}
+              />
+            </Fade>
             <ToDoFooter
               tasksLeft={this.state.tasksLeft}
               onClearCheckedTasks={this.handleClearCheckedTasks}

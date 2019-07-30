@@ -7,6 +7,7 @@ const Response = (data, error) => ({ data, error });
 export async function getTasks() {
   let tasks = [];
   let error = "";
+  await new Promise(resolve => setTimeout(resolve, 2000));
   try {
     const res = await axios.get(`${baseURL}/`);
     tasks = res.data;
