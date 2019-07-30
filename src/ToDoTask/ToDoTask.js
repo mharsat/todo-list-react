@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 
 function ToDoTask(props) {
-  const generateDeleteIcon = theme => {
+  const renderDeleteIcon = theme => {
     if (props.isChosen)
       return (
         <Icon
@@ -54,7 +54,7 @@ function ToDoTask(props) {
                 color: props.task.isDone ? "gray" : theme.text
               }}
             />
-            {generateDeleteIcon(theme)}
+            {renderDeleteIcon(theme)}
           </ListItem>
           <Divider light variant={props.isLast ? "fullWidth" : "middle"} />
         </div>
@@ -62,6 +62,8 @@ function ToDoTask(props) {
     </ThemeContext.Consumer>
   );
 }
+
+const ToDoTaskMemo = React.memo(ToDoTask);
 
 ToDoTask.propTypes = {
   onDeleteTask: PropTypes.func.isRequired,
@@ -72,4 +74,4 @@ ToDoTask.propTypes = {
   isChosen: PropTypes.bool.isRequired
 };
 
-export default ToDoTask;
+export default ToDoTaskMemo;

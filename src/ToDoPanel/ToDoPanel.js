@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styles from "./ToDoPanel.module.scss";
 import NewTaskTextbox from "../NewTaskTextbox/NewTaskTextbox";
 import { Button } from "@material-ui/core";
@@ -6,6 +6,7 @@ import { ThemeContext } from "../theme-context.js";
 import * as server from "../serverAPI";
 import ToDoList from "../ToDoList/ToDoList";
 import ToDoFooter from "../ToDoFooter/ToDoFooter";
+import PropTypes from "prop-types";
 
 export const tabs = Object.freeze({
   ALL: "All",
@@ -13,7 +14,7 @@ export const tabs = Object.freeze({
   TODO: "To Do"
 });
 
-class ToDoPanel extends Component {
+class ToDoPanel extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +25,8 @@ class ToDoPanel extends Component {
   }
 
   async componentDidMount() {
-    const tasks = await server.getTasks();
+    const { data: tasks, error } = await server.getTasks();
+    if (error) this.props.onShowError(error);
     const tasksLeft = tasks.filter(task => !task.isDone).length;
     this.setState({
       tasks,
@@ -33,6 +35,10 @@ class ToDoPanel extends Component {
   }
 
   handleNewTask = async task => {
+    const [oldTasks, oldTasksLeft] = [
+      [...this.state.tasks],
+      this.state.tasksLeft
+    ];
     const newTask = {
       title: task,
       isDone: false
@@ -43,33 +49,64 @@ class ToDoPanel extends Component {
       tasks,
       tasksLeft
     });
-    server.addTask(newTask);
+    const error = await server.addTask(newTask);
+    if (error) {
+      this.props.onShowError(error);
+      this.setState({
+        tasks: oldTasks,
+        tasksLeft: oldTasksLeft
+      });
+    }
   };
 
   handleClearCheckedTasks = async _ => {
+    const [oldTasks, oldTasksLeft] = [
+      [...this.state.tasks],
+      this.state.tasksLeft
+    ];
     const tasks = this.state.tasks.filter(task => !task.isDone);
     this.setState({
       tasks,
       tasksLeft: tasks.length
     });
-    await server.removeCompletedTasks();
+    const error = await server.removeCompletedTasks();
+    if (error) {
+      this.props.onShowError(error);
+      this.setState({
+        tasks: oldTasks,
+        tasksLeft: oldTasksLeft
+      });
+    }
   };
 
-  handleCheck = async (event, isChecked, index) => {
+  handleCheck = async (_, isChecked, index) => {
     const id = this.state.tasks[index]._id;
+    const [oldTasks, oldTasksLeft] = [
+      [...this.state.tasks],
+      this.state.tasksLeft
+    ];
     const tasks = [...this.state.tasks];
     tasks[index].isDone = isChecked;
     this.setState({
       tasks,
       tasksLeft: isChecked ? this.state.tasksLeft - 1 : this.state.tasksLeft + 1
     });
-    await server.updateTask(id, {
-      isDone: isChecked
-    });
+    const error = await server.updateTask(id, { isDone: isChecked });
+    if (error) {
+      this.props.onShowError(`${error}: ${tasks[index].title}`);
+      this.setState({
+        tasks: oldTasks,
+        tasksLeft: oldTasksLeft
+      });
+    }
   };
 
   handleDeleteTask = async index => {
     const id = this.state.tasks[index]._id;
+    const [oldTasks, oldTasksLeft] = [
+      [...this.state.tasks],
+      this.state.tasksLeft
+    ];
     const tasksLeft = this.state.tasks[index].isDone
       ? this.state.tasks.length
       : this.state.tasks.length - 1;
@@ -78,22 +115,36 @@ class ToDoPanel extends Component {
       tasks,
       tasksLeft
     });
-    await server.removeTask(id);
+    const error = await server.removeTask(id);
+    if (error) {
+      this.props.onShowError(`${error}: ${tasks[index].title}`);
+      this.setState({
+        tasks: oldTasks,
+        tasksLeft: oldTasksLeft
+      });
+    }
   };
 
   handleEditTask = async (newTask, index) => {
-    console.log(newTask);
     const id = this.state.tasks[index]._id;
-
+    const [oldTasks, oldTasksLeft] = [
+      [...this.state.tasks],
+      this.state.tasksLeft
+    ];
     if (newTask === "") {
       this.handleDeleteTask(index);
     } else if (newTask !== this.state.tasks[index]) {
       const tasks = [...this.state.tasks];
       tasks[index].title = newTask;
       this.setState({ tasks });
-      await server.updateTask(id, {
-        title: newTask
-      });
+      const error = await server.updateTask(id, { title: newTask });
+      if (error) {
+        this.props.onShowError(`${error}: ${tasks[index].title}`);
+        this.setState({
+          tasks: oldTasks,
+          tasksLeft: oldTasksLeft
+        });
+      }
     }
   };
 
@@ -144,5 +195,9 @@ class ToDoPanel extends Component {
     );
   }
 }
+
+ToDoPanel.propTypes = {
+  onShowError: PropTypes.func.isRequired
+};
 
 export default ToDoPanel;

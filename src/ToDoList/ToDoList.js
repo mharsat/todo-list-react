@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import ToDoTask from "../ToDoTask/ToDoTask";
 import { tabs } from "../ToDoPanel/ToDoPanel";
 import List from "@material-ui/core/List";
@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const noChosenElement = -1;
 
-class ToDoList extends Component {
+class ToDoList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,10 +18,10 @@ class ToDoList extends Component {
 
   handleMouseLeave = () => this.setState({ chosenElement: noChosenElement });
 
-  generateTaskItems = () => {
-    const { tasks, currentTab, ...props } = this.props;
+  renderTaskItems = () => {
+    const { tasks, currentTab, ...otherProps } = this.props;
     // eslint-disable-next-line array-callback-return
-    return this.props.tasks.map((task, index) => {
+    return tasks.map((task, index) => {
       const item = (
         <ToDoTask
           key={`div-${task.title}_${index}`}
@@ -31,7 +31,7 @@ class ToDoList extends Component {
           isChosen={this.state.chosenElement === index}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
-          {...props}
+          {...otherProps}
         />
       );
 
@@ -51,7 +51,7 @@ class ToDoList extends Component {
   };
 
   render() {
-    return <List>{this.generateTaskItems()}</List>;
+    return <List>{this.renderTaskItems()}</List>;
   }
 }
 
